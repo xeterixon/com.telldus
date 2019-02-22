@@ -2,14 +2,15 @@
     "id": "com.telldus",
     "sdk": 2,
     "name": {
-        "en": "Telldus"
+        "en": "Telldus Z-wave"
     },
     "description": {
         "en": "Adds support for Telldus Z-wave devices"
     },
     "category": "appliances",
-    "version": "1.0.2",
+    "version": "1.1.1",
     "compatibility": ">=1.5.0",
+    "brandColor": "#be5c2e",
     "author": {
         "name": "Yngve Bøe Haugom",
         "email": "yngve_haugom@hotmail.com"
@@ -23,13 +24,22 @@
   	},
      "contributors": {
         "developers": [
+        	{
+	            "name": "Yngve Bøe Haugom",
+                "email": "yngve_haugom@hotmail.com"
+            },
             {
 	            "name": "Michael Medin",
                 "email": "michael@medin.name"
-			},
+            },
             {
 	            "name": "Tobbe Eriksson",
                 "email": "xet.erixon@gmail.com"
+
+            },
+            {
+		    "name": "Kristoffer Sjöberg",
+		    "email": ""
             }
         ]
     },
@@ -39,6 +49,45 @@
     "images": {
         "large": "/assets/images/large.png",
         "small": "/assets/images/small.png"
+    },
+    "flow": {
+    	"triggers": [],
+    	"actions": [],
+    	"conditions": [
+    		{
+    			"id": "current_power",
+    			"title": {
+    				"en": "The current power usage"
+    			},
+    			"args": [
+    				{
+                        "name": "plugin_switch_mini",
+                        "type": "device",
+                        "filter": "driver_id=TZWP-102"
+                    },
+    				{
+    					"name": "W",
+    					"type": "number",
+    					"min": 0,
+    					"max": 2300,
+    					"step": 10,
+    					"placeholder": {
+    						"en": "Set a value in watts"
+    					}
+    				},
+    				{
+    					"name": "errormargin",
+    					"type": "number",
+    					"min": 0,
+    					"max": 100,
+    					"step": 10,
+    					"placeholder": {
+    						"en": "Set error margin in %"
+    					}
+    				}
+    			]
+    		}
+    	]
     },
     "drivers": [
         {
@@ -79,7 +128,7 @@
 			    "learnmode": {
 				    "image": "/drivers/TZDW-100/assets/learnmode.svg",
 					"instruction": {
-					"en": "Automatic inclusion\nWhen a battery is inserted, the device is in automatical add mode for one minute (Network Wide Inclusion, NWI). If so, the device should be added now. If not, see manual inclusion. \n\nManual inclusion\nPress the button on the device three times fast to include the device."
+					"en": "Automatic inclusion: \nWhen a battery is inserted, the device is in automatic inclusion mode for one minute (Network Wide Inclusion, NWI). If so, the device should be added now. \n For manual inclusion: \nPress the button on the device three times fast."
 					}
 			    },
 			    "productDocumentation": "https://products.z-wavealliance.org/ProductManual/File?folder=&filename=Manuals/1455/Quickguide_Sensor_Switch_107x153mm_PMS.pdf",
@@ -115,24 +164,29 @@
 					"label": {
 						"en": "Association group 2"
 					},
+					"collapsed": true,
 					"children": [
 						{
-							"id": "1",
+							"id": "command_assoc_group_2",
 							"type": "dropdown",
 							"value": "0",
 							"label": {
-								"en": "Command sent to association group 2"
+								"en": "Command sent"
 							},
 							"hint": {
 						    	"en": "Select what type of command to be sent to nodes in association group 2. Possible values: 0: Basic, 1: Switch Binary, 2: Switch All, 3: Switch Multilevel."
 							},
+							"zwave": {
+								"index": 1,
+								"size": 1
+              				},
 							"values": [
 								{
 		                            "id": "0",
 		                            "label": { "en": "Basic" }
 		                        },
 								{
-		                            "id": "1",
+		                            "id": "1",	
 		                            "label": { "en": "Switch Binary" }
 		                        },
 		                        {
@@ -143,51 +197,64 @@
 		                            "id": "3",
 		                            "label": { "en": "Switch Multilevel" }
 		                        }
-		                    ],
-							"_size": 1
+		                    ]
 						},
 						{
-							"id": "2",
+							"id": "value_assoc_group_2",
 		                    "type": "number",
 							"label": {
-		                    	"en": "Select value that should be sent to association group 2"
+		                    	"en": "Value sent"
 							},
 							"hint": {
 								"en": "Select what value that should be sent to association group 2 when Swith Multilevel is set in above setting.\nUse 1-99 for specific dim-level, -1 return to last value. \nShould only be changed when Swith Multilevel is set in configuration 1."
+							},
+							"zwave": {
+								"index": 2,
+								"size": 1
 							},
 							"value": -1,
 							"attr": {
 								"min": -1,
 								"max": 99
-							},
-							"_size": 1
+							}
 						},
 						{
-							"id": "3",
+							"id": "invert_signal_assoc_group_2",
 							"type": "checkbox",
 							"value": false,
 							"label": {
-								"en": "Invert signals sent to association group 2"
+								"en": "Invert signals"
 							},
 							"hint": {
 								"en": "When this configuration is set to inverted, an off-signal will be sent when the sensor is opened and on-signal when it's closed instead of the opposite."
 							},
-							"_size": 1
+							"zwave": {
+								"index": 3,
+								"size": 1
+							}
 						}	
 					]
 				},
 				{	
 					"type": "group",
-					"label": { "en": "Association group 3" },
+					"collapsed": true,
+					"label": {
+							"en": "Association group 3"
+						},
 					"children": [
 						{
-							"id": "4",
+							"id": "command_assoc_group_3",
 							"type": "dropdown",
-							"value": "0",
-							"label": { "en": "Command sent to association group 3" },
+							"label": { "en": "Command sent" },
 							"hint": {
-						    	"en": "Select what type of command to be sent to nodes in association group 2. Possible values: 0: Basic, 1: Switch Binary, 2: Switch All, 3: Switch Multilevel."
+						    	"en": "Select what type of command to be sent to nodes in association group 3. Possible values: 0: Basic, 1: Switch Binary, 2: Switch All, 3: Switch Multilevel."
 							},
+							"zwave": {
+								"index": 4,
+								"size": 1,
+								"signed": false
+							},
+							"value": "0",
 							"values": [
 								{
 		                            "id": "0",
@@ -208,48 +275,67 @@
 		                    ]
 						},
 						{
-							"id": "5",
+							"id": "value_assoc_group_3",
 							"type": "number",
 							"value": -1,
 							"attr": {
 								"min": -1,
 								"max": 99
 							},
-							"_size": 1,
 							"label": {
-								"en": "Select value that should be sent to association group 3"
+								"en": "Value sent"
 							},
 							"hint": {
 								"en": "Select what value that should be sent to association group 3 when Swith Multilevel is set in above setting.\nUse 1-99 for specific dim-level, -1 return to last value. \nShould only be changed when Swith Multilevel is set in configuration 1."
+							},
+							"zwave": {
+								"index": 5,
+								"size": 1
 							}
 						},
 						{
-							"id": "6",
+							"id": "invert_signal_assoc_group_3",
 							"type": "checkbox",
-							"value": false,
 							"label": {
-								"en": "Invert signals sent to association group 3"
+								"en": "Invert signals"
 							},
 							"hint": {
 								"en": "When this configuration is set to inverted, an off-signal will be sent when the sensor is opened and on-signal when it's closed instead of the opposite."
 							},
-							"_size": 1
+							"zwave": {
+								"index": 6,
+								"size": 1
+							},
+							"value": false
 						}	
 					]
 				},
 				{
-					"id": "7",
+					"id": "led_indicator",
 					"type": "checkbox",
 					"value": true,
 					"label": { "en": "LED-Indicator" },
 					"hint": {
 						"en": "Select if the LED indicator shold be active or not. Turn it off to reduce the power consumption."
 					},
-					"_size": 1
+					"zwave": {
+						"index": 7,
+						"size": 1
+							}
 				},
 				{
-					"id": "8",
+					"id": "command_lifeline_type",
 					"type": "dropdown",
+						"label": {
+						"en": "Command type"
+					},
+					"hint": {
+						"en": "Type of command to be sent in the Lifeline. 0 - Notification, 1 - Sensor binary."
+					},
+					"zwave": {
+						"index": 8,
+						"size": 1
+					},
 					"value": "0",
 					"values": [
 						{
@@ -260,15 +346,9 @@
 							"id": "1",
 							"label": { "en": "Sensor binary" }
 						}
-					],
-					"label": {
-						"en": "Type of command to be sent in the Lifeline"
-					},
-					"hint": {
-						"en": "0 - Notification, 1 - Sensor binary."
-					},
-					"_size": 1
-					}
+					]
+				
+				}
 			]
     	},
 		{
@@ -277,9 +357,7 @@
 				"en": "Plug-in Switch (Schuko)"
 				},
 			"class": "socket",
-			"capabilities": [
-				"onoff"
-			],
+			"capabilities": ["onoff"],
 			"images": {
 				"large": "/drivers/TZWP-100/assets/images/large.png",
 				"small": "/drivers/TZWP-100/assets/images/small.png"
@@ -291,7 +369,7 @@
 		        "learnmode":{  
 		            "image":"/drivers/TZWP-100/assets/learnmode.svg",
 		            "instruction":{  
-		                "en":"Automatically add device to network\nWhen the device is inserted into an electrical outlet it’s in automatical add mode for four minutes (Network Wide Inclusion, NWI). This means that the device is added automatically when the Z-wave controller enters add mode.\nManually add device to network\nStart the add mode on the Z-wave controller. Press the button on the device three times fast.The device will now be added into the Z-wave network\nWhen the device is not added to any Z-wave network, the LED will flash red slowly."
+		                "en":"Automatic inclusion: \nWhen the device is inserted into an electrical outlet, it’s in automatical inclusion mode for four minutes (Network Wide Inclusion, NWI). This means that the device should now be added automatically.\nTo manually add device to network: \n Press the button on the device three times fast. \nIf the device is not added to any Z-wave network, the LED will flash red slowly."
 		            }
 		        },
 		        "productDocumentation":"https://products.z-wavealliance.org/ProductManual/File?folder=&filename=Manuals/1536/manual.pdf",
@@ -318,14 +396,18 @@
 		    },
 			"settings": [
 				{
-					"id": "1",
+					"id": "countdown_timer",
 					"type": "number",
 					"value": 0,
 					"attr": {
 						"min": 0,
 						"max": 254
 					},
-					"_size": 1,
+					"zwave": {
+						"index": 1,
+						"size": 1,
+						"signed": false
+					},
 					"label": {
 						"en": "Countdown timer."
 					},
@@ -334,30 +416,38 @@
 					}
 				},
 				{
-					"id": "2",
+					"id": "state_after_power_failure",
 					"type": "number",
-					"value": 0,
+					"value": 1,
 					"attr": {
 						"min": 0,
 						"max": 2
 					},
-					"_size": 1,
+					"zwave": {
+						"index": 2,
+						"size": 1,
+						"signed": false
+					},
 					"label": {
 						"en": "Remember device status after power failure"
 					},
 					"hint": {
-						"en": "Define how the plug will react after the power supply is back on. Default value: 1 (remember status).\nPossible values: 0: Always off, 1: Remember status, 2: Always on."
+						"en": "Define how the plug will react after the power supply is back on.\nPossible values: 0: Always off, 1: Remember status (Default), 2: Always on."
 					}
 				},
 				{
-					"id": "3",
+					"id": "led_indicator",
 					"type": "number",
 					"value": 0,
 					"attr": {
 						"min": 0,
 						"max": 100
 					},
-					"_size": 1,
+					"zwave": {
+						"index": 3,
+						"size": 1,
+						"signed": false
+					},
 					"label": {
 						"en": "LED indicator"
 					},
@@ -373,7 +463,7 @@
 				"en": "Plug-in Switch Mini"
 				},
 			"class": "socket",
-			"capabilities": ["onoff", "meter_power","measure_power"],
+			"capabilities": ["onoff","meter_power","measure_power"],
 			"images": {
 				"large": "/drivers/TZWP-102/assets/images/large.png",
 				"small": "/drivers/TZWP-102/assets/images/small.png"
@@ -384,7 +474,7 @@
 				"productId":[3],
 				"learnmode":{  
 					"instruction":{  
-						"en":"Automatically add device to network\nWhen the device is inserted into an electrical outlet it’s in automatical add mode for four minutes (Network Wide Inclusion, NWI). This means that the device is added automatically when the Z-wave controller enters add mode.\nManually add device to network\nStart the add mode on the Z-wave controller. Press the button on the device three times fast.The device will now be added into the Z-wave network\nWhen the device is not added to any Z-wave network, the LED will flash red slowly."
+						"en":"Automatic inclusion: \nWhen the device is inserted into an electrical outlet it’s in automatical inclusion mode for four minutes (Network Wide Inclusion, NWI). In that case the device should now be added automatically.\nTo manually add device to network: \nPress the button on the device three times fast. \nIf the device is not added to any Z-wave network, the LED will flash red slowly."
 					}
 				},
 				"productDocumentation":"https://products.z-wavealliance.org/ProductManual/File?folder=&filename=Manuals/2892/TZWP-102_technical-manual.pdf",
@@ -411,14 +501,18 @@
 			},
 			"settings": [
 				{
-					"id": "1",
+					"id": "over_current",
 					"type": "number",
 					"value": 1,
 					"attr": {
 						"min": 0,
 						"max": 1
 					},
-					"_size": 1,
+					"zwave": {
+						"index": 1,
+						"size": 1,
+						"signed": false
+					},
 					"label": {
 						"en": "Over current protection."
 					},
@@ -427,46 +521,58 @@
 					}
 				},
 				{
-					"id": "2",
+					"id": "state_after_power_failure",
 					"type": "number",
 					"value": 0,
 					"attr": {
 						"min": 0,
 						"max": 2
 					},
-					"_size": 1,
+					"zwave": {
+						"index": 2,
+						"size": 1,
+						"signed": false
+					},
 					"label": {
 						"en": "Setting device status after power failure"
 					},
 					"hint": {
-						"en": "0 = Always off (default).\n1 = Remember status.\n2 = Always on."
+						"en": "0 = Remember status (default).\n1 = Always on.\n2 = Always off."
 					}
 				},
 				{
-					"id": "3",
+					"id": "notify_status_change",
 					"type": "number",
 					"value": 1,
 					"attr": {
 						"min": 0,
 						"max": 2
 					},
-					"_size": 1,
+					"zwave": {
+						"index": 3,
+						"size": 1,
+						"signed": false
+					},
 					"label": {
-						"en": "Notification when Load status change"
+						"en": "Notification when load status change"
 					},
 					"hint": {
-						"en": "0 = The function is disabled.\n1 = Send Basic report. (default)\n2 = Send Basic report only when Load status is not changed by Z-WAVE Command."
+						"en": "0 = Disabled.\n1 = Send Basic report. (default)\n2 = Send Basic report only when load status is not changed by Z-WAVE command."
 					}
 				},
 				{
-					"id": "4",
+					"id": "led_status",
 					"type": "number",
 					"value": 0,
 					"attr": {
 						"min": 0,
 						"max": 1
 					},
-					"_size": 1,
+					"zwave": {
+						"index": 4,
+						"size": 1,
+						"signed": false
+					},
 					"label": {
 						"en": "LED Load indicator mode selection"
 					},
@@ -475,99 +581,122 @@
 					}
 				},
 				{
-					"id": "16",
+					"id": "min_watt_change",
 					"type": "number",
-					"value": 10,
+					"value": 50,
 					"attr": {
-						"min": 0,
-						"max": 65535
+						"min": 1,
+						"max": 2500
 					},
-					"_size": 2,
+					"zwave": {
+						"index": 16,
+						"size": 2,
+						"signed": false
+					},
 					"label": {
 						"en": "Minimum change in wattage"
 					},
 					"hint": {
-						"en": "The value here represents minimum change in wattage (in terms of wattage) for a meter report to be sent"
+						"en": "The value here represents the minimum change in wattage (W), since the last report, for a new report to be sent."
 					}
 				},
 				{
-					"id": "17",
+					"id": "min_watt_change_percent",
 					"type": "number",
 					"value": 10,
 					"attr": {
-						"min": -128,
-						"max": 127
+						"min": 0,
+						"max": 100
 					},
-					"_size": 1,
+					"zwave": {
+						"index": 17,
+						"size": 1
+					},
 					"label": {
 						"en": "Minimum change in wattage percent"
 					},
 					"hint": {
-						"en": "The value here represents minimum change in wattage percent (in terms of percentage) for a meter report (watt) to be sent"
+						"en": "The value here represents minimum change in wattage percentage, since the last report, for a meter report (W) to be sent. 0 - Disabled."
 					}
 				},				
 				{
-					"id": "101",
+					"id": "time_meter_report_w",
 					"type": "number",
-					"value": 5,
+					"value": 600,
 					"attr": {
 						"min": 0,
 						"max": 2678400
 					},
-					"_size": 4,
+					"zwave": {
+						"index": 101,
+						"size": 4,
+						"signed": false
+					},
 					"label": {
-						"en": "Setting time for sending meter report (watt)"
+						"en": "Setting time for sending power report (watt)"
 					},
 					"hint": {
-						"en": "TODO"
+						"en": "The interval time for sending power report (watt) to associated device (Group Lifeline). 0 Disabled.\nValid values are 5 - 2678400."
 					}
 				},
 				{
-					"id": "102",
+					"id": "time_meter_report_kwh",
 					"type": "number",
-					"value": 5,
+					"value": 3600,
 					"attr": {
 						"min": 0,
 						"max": 2678400
 					},
-					"_size": 4,
+					"zwave": {
+						"index": 102,
+						"size": 4,
+						"signed": false
+					},
 					"label": {
-						"en": "Setting time for sending meter report (KWh)"
+						"en": "Setting time for sending energy report (KWh)"
 					},
 					"hint": {
-						"en": "TODO"
+						"en": "The interval time for sending energy report (KWh) to association device (Group Lifeline). 0 - Disabled.\nValid values are 5 - 2678400."
 					}
 				},
 				{
-					"id": "103",
+					"id": "time_meter_report_v",
 					"type": "number",
-					"value": 5,
+					"value": 0,
 					"attr": {
 						"min": 0,
 						"max": 2678400
 					},
-					"_size": 4,
+					"zwave": {
+						"index":103,
+						"size": 4,
+						"signed": false
+					},
 					"label": {
-						"en": "Setting time for sending meter report (voltage)"
+						"en": "Setting time for sending voltage report (V)"
 					},
 					"hint": {
-						"en": "TODO"
+						"en": "The interval time for sending voltage report (V) to association device (Group Lifeline). 0 - Disabled.\nValid values are 5 - 2678400."
 					}
 				},
 				{
-					"id": "104",
+					"id": "time_meter_report_c",
 					"type": "number",
-					"value": 5,
+					"value": 0,
 					"attr": {
 						"min": 0,
 						"max": 2678400
 					},
-					"_size": 4,
+					"zwave": {
+						"index": 104,
+						"size": 4,
+						"signed": false
+					},
 					"label": {
-						"en": "Setting time for sending meter report (current)"
+						"en": "Setting time for sending current report (A)"
 					},
 					"hint": {
-						"en": "TODO"
+						"en": "The interval time for sending current report (A) to association device (Group Lifeline). 0 - Disabled.\nValid values are 5 - 2678400."
 					}
 				},
 				{
@@ -578,7 +707,11 @@
 						"min": 0,
 						"max": 1
 					},
-					"_size": 1,
+					"zwave": {
+						"index": 254,
+						"size": 1,
+						"signed": false
+					},
 					"label": {
 						"en": "Enable/disable the configuration command"
 					},
